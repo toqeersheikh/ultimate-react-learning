@@ -45,7 +45,7 @@ const pizzaData = [
     ingredients: "Tomato, mozarella, ham, aragula, and burrata cheese",
     price: 18,
     photoName: "pizzas/prosciutto.jpg",
-    soldOut: false,
+    soldOut: true,
   },
 ];
 
@@ -59,16 +59,16 @@ function App() {
   );
 }
 
-function Pizza(props) {
+function Pizza({ pizzaObj }) {
   return (
-    <div className="pizza">
-      <img src={props.photoName} alt={props.photoName} />
+    <li className={`pizza  ${pizzaObj.soldOut ? "sold-out" : ""} `}>
+      <img src={pizzaObj.photoName} alt={pizzaObj.photoName} />
       <div>
-        <h3>{props.name}</h3>
-        <p>{props.ingredients}</p>
-        <span>{props.price}</span>
+        <h3>{pizzaObj.name}</h3>
+        <p>{pizzaObj.ingredients}</p>
+        <span>{pizzaObj.soldOut ? "SOLD OUT" : pizzaObj.price}</span>
       </div>
-    </div>
+    </li>
   );
 }
 
@@ -83,15 +83,42 @@ function Header() {
 }
 
 function Menu() {
+  const pizzas = pizzaData;
+  // const pizzas = [];
+
+  const numPizzas = pizzas.length;
+
   return (
     <main className="menu">
-      <h1>Menu</h1>
-      <Pizza
-        name="Pizza Spinaci"
-        price={12}
-        ingredients="Tomato, mozarella, spinach, and ricotta cheese"
-        photoName="pizzas/spinaci.jpg"
-      />
+      <h2>Our Menu</h2>
+
+      {/*  Conditional Rendering using && */}
+
+      {/* {numPizzas > 0 && (
+        <ul className="pizzas">
+          {pizzas.map((pizza) => (
+            <Pizza pizzaObj={pizza} key={pizza.name} />
+          ))}
+        </ul>
+      )} */}
+
+      {/* Conditional Rendering using Ternary Operator */}
+
+      {numPizzas > 0 ? (
+        <>
+          <p>
+            Authentic Italian cuisine. 6 creative dishes to choose from, All
+            from our stone oven, all organic, all delicious.
+          </p>
+          <ul className="pizzas">
+            {pizzas.map((pizza) => (
+              <Pizza pizzaObj={pizza} key={pizza.name} />
+            ))}
+          </ul>
+        </>
+      ) : (
+        <p>We are still working on our menu. Please come back later!</p>
+      )}
     </main>
   );
 }
@@ -100,15 +127,32 @@ function Footer() {
   const openHour = 12;
   const closeHour = 22;
   const isOpen = hour >= openHour && hour <= closeHour;
-  console.log(isOpen);
+  // console.log(isOpen);
 
   // if (hour >= openHour && hour <= closeHour) alert("We are currently open");
   // else alert("Sorry we are closed!");
 
   return (
     <footer className="footer">
-      {new Date().toLocaleTimeString()}. We are currently open.
+      {isOpen ? (
+        <Order openHour={openHour} closeHour={closeHour} />
+      ) : (
+        <p>
+          We are happy to welcome you between {openHour}:00 and {closeHour}:00.
+        </p>
+      )}
     </footer>
+  );
+}
+function Order({ openHour, closeHour }) {
+  return (
+    <div className="order">
+      <p>
+        We are currently open from {openHour}:00 to {closeHour}:00. Come visit
+        us or order online.
+      </p>
+      <button className="btn">Order</button>
+    </div>
   );
 }
 // React Version 18
